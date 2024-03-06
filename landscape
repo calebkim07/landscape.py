@@ -1,0 +1,105 @@
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Set up the screen
+WIDTH, HEIGHT = 800, 400
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+
+# Colors
+SKY_DAY = (135, 206, 235)  # Light blue
+SKY_NIGHT = (0, 0, 51)      # Dark blue
+SUN_COLOR = (255, 255, 0)   # Yellow
+MOON_COLOR = (255, 255, 255) # White
+GRASS_COLOR = (34, 139, 34) # Green
+CLOUD_COLOR = (255, 255, 255) # White
+
+# Landscape parameters
+day_duration = 500  # Duration of day in seconds
+night_duration = 700 # Duration of night in seconds
+
+# Sun and Moon position
+sun_x, sun_y = 100, 100
+moon_x, moon_y = WIDTH - 100, 100
+
+# Clouds position and speed
+cloud_1x = 130
+cloud_1y = 40
+cloud_speed = 1
+cloud_2x = 170
+cloud_2y = 40
+cloud_speed = 1
+cloud_3x = 150
+cloud_3y = 30
+cloud_speed = 1
+
+# Clock to control FPS
+clock = pygame.time.Clock()
+
+# Main loop
+running = True
+time = 0
+while running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Clear the screen
+    if time < day_duration:
+        screen.fill(SKY_DAY)
+    else:
+        screen.fill(SKY_NIGHT)
+
+    # Draw sun or moon
+    if time < day_duration:
+        pygame.draw.circle(screen, SUN_COLOR, (sun_x, sun_y), 40)
+    else:
+        pygame.draw.circle(screen, MOON_COLOR, (moon_x, moon_y), 40)
+
+    # Draw landscape
+    pygame.draw.rect(screen, GRASS_COLOR, (0, HEIGHT / 2, WIDTH, HEIGHT / 2))
+
+    # Draw clouds
+    pygame.draw.circle(screen, (240, 240, 240), (cloud_1x, cloud_1y), 30)
+    pygame.draw.circle(screen, (240, 240, 240), (cloud_2x, cloud_2y), 30)
+    pygame.draw.circle(screen, (240, 240, 240), (cloud_3x, cloud_3y), 30)
+
+    # Move sun, moon, and clouds
+    if time < day_duration:
+        sun_x += 1  # Move sun right during day
+    else:
+        moon_x -= 1  # Move moon left during night
+    cloud_1x += cloud_speed
+    cloud_2x += cloud_speed
+    cloud_3x += cloud_speed
+
+    # Reset positions if out of bounds
+    if sun_x > WIDTH + 100:
+        sun_x = -100
+    if moon_x < -100:
+        moon_x = WIDTH + 100
+    if cloud_1x > WIDTH + 100:
+        cloud_1x = -100
+    if cloud_2x > WIDTH + 100:
+        cloud_2x = -100
+    if cloud_3x > WIDTH + 100:
+        cloud_3x = -100
+
+    # Update time
+    time += 1
+    if time > day_duration + night_duration:
+        time = 0  # Reset time
+
+    # Update display
+    pygame.display.flip()
+
+    # Cap the frame rate
+    clock.tick(60)
+
+# Quit Pygame
+pygame.quit()
+sys.exit()
